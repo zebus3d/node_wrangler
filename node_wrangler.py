@@ -3327,6 +3327,9 @@ class NWAddSequence(Operator, NWBase, ImportHelper):
         type=bpy.types.OperatorFileListElement,
         options={'HIDDEN', 'SKIP_SAVE'}
     )
+    relative: BoolProperty(
+        name="Relative Path"
+    )
 
     def execute(self, context):
         nodes, links = get_nodes_links(context)
@@ -3409,6 +3412,12 @@ class NWAddSequence(Operator, NWBase, ImportHelper):
         image_user = node.image_user if tree.type == 'SHADER' else node
         image_user.frame_offset = int(files[0][len(without_num)+len(directory):-1*(len(extension)+1)]) - 1  # separate the number from the file name of the first  file
         image_user.frame_duration = num_frames
+        
+        if self.relative:
+            if bpy.data.filepath:     
+                node.image.filepath = node.image.filepath.replace(directory, bpy.path.relpath(directory, start=None)+'/')
+            else:
+                self.report({'WARNING'}, "It is not possible to use relative routes with unsaved scenes!")
 
         return {'FINISHED'}
 
