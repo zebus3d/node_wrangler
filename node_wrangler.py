@@ -3415,7 +3415,7 @@ class NWAddSequence(Operator, NWBase, ImportHelper):
         
         if self.relative:
             if bpy.data.filepath:     
-                node.image.filepath = node.image.filepath.replace(directory, bpy.path.relpath(directory, start=None)+'/')
+                node.image.filepath = node.image.filepath.replace(directory[:-1], bpy.path.relpath(directory, start=None))
             else:
                 self.report({'WARNING'}, "It is not possible to use relative routes with unsaved scenes!")
 
